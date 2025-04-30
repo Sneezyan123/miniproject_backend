@@ -4,10 +4,13 @@ from sqlalchemy.orm import declarative_base
 from contextlib import asynccontextmanager
 from config import settings
 
-DATABASE_URL = settings.DATABASE_URL
+# Convert the URL to use asyncpg driver
+database_url = settings.DATABASE_URL
+if database_url.startswith('postgresql://'):
+    database_url = database_url.replace('postgresql://', 'postgresql+asyncpg://', 1)
 
 engine = create_async_engine(
-    DATABASE_URL,
+    database_url,
     echo=True,
     pool_pre_ping=True,
     pool_size=5,

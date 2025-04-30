@@ -20,7 +20,7 @@ services:
     autoDeploy: true
 
 databases:
-  - name: logistics-db
+  - name: Logistics
     plan: free
     databaseName: neondb
     user: neondb_owner

@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from models.role import Role, RoleEnum
 from sqlalchemy import select
+import os
 
 async def initialize_roles():
     async with async_session_maker() as session:
@@ -37,16 +38,30 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(lifespan=lifespan)
+
+# Updated CORS middleware to handle production environment
+origins = [
+    "http://localhost:3000",  # Local development
+    "https://your-frontend-domain.onrender.com"  # Replace with your actual frontend domain
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 app.include_router(user_router.router, prefix="/user")
 app.include_router(equipment_router.router, prefix="/equipment")
 app.include_router(request_router.router, prefix="/requests")
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host = "localhost", port = 8000, reload=True, workers=1)
+    if os.environ.get("RENDER"):
+        # Production mode
+        port = int(os.environ.get("PORT", 10000))
+        uvicorn.run("main:app", host="0.0.0.0", port=port, workers=1)
+    else:
+        # Development mode
+        uvicorn.run("main:app", host="localhost", port=8000, reload=True, workers=1)

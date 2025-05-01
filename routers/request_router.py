@@ -62,7 +62,7 @@ async def get_all_requests(
     try:
         
         requests = await request_service.get_all_requests(db)
-        return {"asnwer": requests}
+        return requests
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 @router.put("/{request_id}", response_model=RequestResponse)

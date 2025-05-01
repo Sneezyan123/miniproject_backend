@@ -147,8 +147,21 @@ async def get_all_requests(db: AsyncSession):
     query = (
         select(EquipmentRequest)
         .options(
-            joinedload(EquipmentRequest.items).joinedload(RequestItem.equipment)
+            joinedload(EquipmentRequest.items)
+            .joinedload(RequestItem.equipment),
+            joinedload(EquipmentRequest.user)
         )
+        .order_by(EquipmentRequest.created_at.desc())
     )
     result = await db.execute(query)
-    return result.unique().scalars().all()
+    requests = result.unique().scalars().all()
+    
+    # Ensure all relationships are loaded
+    for request in requests:
+        await db.refresh(request)
+        for item in request.items:
+            await db.refresh(item)
+            if item.equipment:
+                await db.refresh(item.equipment)
+    
+    return requests

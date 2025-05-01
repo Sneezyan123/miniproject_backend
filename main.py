@@ -39,10 +39,9 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-# Updated CORS middleware to handle production environment
 origins = [
-    "http://localhost:3000",  # Local development
-    "https://your-frontend-domain.onrender.com"  # Replace with your actual frontend domain
+    "http://localhost:3000",
+    "https://sneezyan123.github.io/project_logistic"
 ]
 
 app.add_middleware(

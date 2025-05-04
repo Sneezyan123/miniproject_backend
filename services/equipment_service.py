@@ -48,7 +48,7 @@ async def get_free_equipment(db: AsyncSession):
     )
     return result.scalars().all()
 
-async def generate_ai_description(name: str, purpose: str) -> str:
+def generate_ai_description(name: str, purpose: str) -> str:
     try:
         api_key = "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"
         api_url = "https://router.huggingface.co/novita/v3/openai/chat/completions"

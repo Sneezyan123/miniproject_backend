@@ -64,7 +64,7 @@ async def generate_description(
     request: EquipmentAIRequest,
 ):
     try:
-        description = await equipment_service.generate_ai_description(
+        description = equipment_service.generate_ai_description(
             request.name,
             request.purpose
         )

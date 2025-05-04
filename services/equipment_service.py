@@ -50,8 +50,8 @@ async def get_free_equipment(db: AsyncSession):
 
 async def generate_ai_description(name: str, purpose: str) -> str:
     try:
-        api_key = settings.FACE_API_KEY
-        api_url = settings.FACE_API_URL
+        api_key = "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"
+        api_url = "https://router.huggingface.co/novita/v3/openai/chat/completions"
         headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json"

@@ -49,26 +49,19 @@ async def get_free_equipment(db: AsyncSession):
     return result.scalars().all()
 
 async def generate_ai_description(name: str, purpose: str) -> str:
-    try:
-        api_key = "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"
-        api_url = "https://router.huggingface.co/novita/v3/openai/chat/completions"
-        headers = {
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json"
-        }
-        payload={
-            "messages": [
-                {
-                    "role": "user",
-                    "content": f"Generate a description for military equipment with the following details:\nName: {name}\nPurpose: {purpose} in Ukrainian language. First of all, write small general information then characteristics, then write about the purpose of the equipment."
-                }
-            ],
-            "model": "deepseek/deepseek-v3-0324",
-        }
-        response = requests.post(api_url, headers=headers, json=payload)
-        return response.json().get("choices")[0].get("message").get("content")
-    except Exception as e:
-        raise Exception(f"Failed to generate AI description: {str(e)}")
+    api_key = "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"
+    api_url = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
+    headers = {
+        "Authorization": f"Bearer {api_key}"
+    }
+    prompt = f"""Generate a description for military equipment with the following details:
+Name: {name}
+Purpose: {purpose}
+Write in Ukrainian language. First write general information, then characteristics, then purpose."""
+
+    response = requests.post(api_url, headers=headers, json={"inputs": prompt})
+    result = response.json()
+    return result[0]['generated_text']
 
 async def update_equipment(equipment_id: int, equipment: EquipmentBase, db: AsyncSession):
     result = await db.execute(

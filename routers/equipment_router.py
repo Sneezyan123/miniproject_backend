@@ -60,7 +60,7 @@ async def get_free_equipment(db: AsyncSession = Depends(get_db)):
     return await equipment_service.get_free_equipment(db)
 
 @router.post("/generate-description")
-async def generate_description(
+def generate_description(
     request: EquipmentAIRequest,
 ):
     try:
